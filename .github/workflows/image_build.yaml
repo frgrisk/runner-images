@@ -15,9 +15,6 @@ jobs:
     permissions:
       id-token: write
       contents: read
-    if: github.event.inputs.image == 'true' || github.event_name == 'push'
-    needs: package
-    # Python action requires x64
     runs-on: ubuntu-latest
     defaults:
       run:
