@@ -1,8 +1,8 @@
 packer {
   required_plugins {
-    azure = {
-      source  = "github.com/hashicorp/azure"
-      version = "1.4.5"
+    amazon = {
+      version = ">= 1.2.8"
+      source  = "github.com/hashicorp/amazon"
     }
   }
 }
@@ -143,40 +143,59 @@ variable "vm_size" {
   default = "Standard_D4s_v4"
 }
 
-source "azure-arm" "build_image" {
-  allowed_inbound_ip_addresses           = "${var.allowed_inbound_ip_addresses}"
-  build_resource_group_name              = "${var.build_resource_group_name}"
-  client_cert_path                       = "${var.client_cert_path}"
-  client_id                              = "${var.client_id}"
-  client_secret                          = "${var.client_secret}"
-  image_offer                            = "ubuntu-24_04-lts"
-  image_publisher                        = "canonical"
-  image_sku                              = "server-gen1"
-  location                               = "${var.location}"
-  managed_image_name                     = "${local.managed_image_name}"
-  managed_image_resource_group_name      = "${var.managed_image_resource_group_name}"
-  os_disk_size_gb                        = "75"
-  os_type                                = "Linux"
-  private_virtual_network_with_public_ip = "${var.private_virtual_network_with_public_ip}"
-  subscription_id                        = "${var.subscription_id}"
-  temp_resource_group_name               = "${var.temp_resource_group_name}"
-  tenant_id                              = "${var.tenant_id}"
-  virtual_network_name                   = "${var.virtual_network_name}"
-  virtual_network_resource_group_name    = "${var.virtual_network_resource_group_name}"
-  virtual_network_subnet_name            = "${var.virtual_network_subnet_name}"
-  vm_size                                = "${var.vm_size}"
+local "aws_ami_name_x86_64" {
+  expression = "GitHub Actions Runner Ubuntu 24.04 ${formatdate("YYYY-MM-DD hh.mm ZZZ", timestamp())} x86_64"
+}
 
-  dynamic "azure_tag" {
-    for_each = var.azure_tags
-    content {
-      name = azure_tag.key
-      value = azure_tag.value
+source "amazon-ebs" "build_image" {
+  ami_name = local.aws_ami_name_x86_64
+
+  ami_users = [
+    "702719119055",
+  ]
+
+  subnet_filter {
+    filters = {
+      "tag:Environment" : "github-actions-runners"
+      "tag:Name" : "*-public-*"
     }
+    random = true
   }
+
+  associate_public_ip_address = true
+
+  ssh_interface = "public_ip"
+
+  spot_instance_types = [
+    "c6a.2xlarge",
+  ]
+
+  spot_price = "auto"
+
+  region = "us-east-2"
+
+  source_ami_filter {
+    filters = {
+      name                = "ubuntu/images/hvm-ssd-gp3/ubuntu-noble-24.04-amd64-server-*"
+      root-device-type    = "ebs"
+      virtualization-type = "hvm"
+    }
+    most_recent = true
+    owners      = ["amazon"]
+  }
+  ssh_username = "ubuntu"
+
+  launch_block_device_mappings {
+    device_name           = "/dev/sda1"
+    volume_type           = "gp3"
+    volume_size           = 100
+    delete_on_termination = true
+  }
+
 }
 
 build {
-  sources = ["source.azure-arm.build_image"]
+  sources = ["source.amazon-ebs.build_image"]
 
   provisioner "shell" {
     execute_command = "sudo sh -c '{{ .Vars }} {{ .Path }}'"
@@ -194,9 +213,9 @@ build {
   }
 
   provisioner "shell" {
-    environment_vars = ["HELPER_SCRIPTS=${var.helper_script_folder}","DEBIAN_FRONTEND=noninteractive"]
+    environment_vars = ["HELPER_SCRIPTS=${var.helper_script_folder}", "DEBIAN_FRONTEND=noninteractive"]
     execute_command  = "sudo sh -c '{{ .Vars }} {{ .Path }}'"
-    scripts          = [
+    scripts = [
       "${path.root}/../scripts/build/install-ms-repos.sh",
       "${path.root}/../scripts/build/configure-apt-sources.sh",
       "${path.root}/../scripts/build/configure-apt.sh"
@@ -215,7 +234,7 @@ build {
 
   provisioner "file" {
     destination = "${var.image_folder}"
-    sources     = [
+    sources = [
       "${path.root}/../assets/post-gen",
       "${path.root}/../scripts/tests",
       "${path.root}/../scripts/docs-gen"
@@ -234,7 +253,7 @@ build {
 
   provisioner "shell" {
     execute_command = "sudo sh -c '{{ .Vars }} {{ .Path }}'"
-    inline          = [
+    inline = [
       "mv ${var.image_folder}/docs-gen ${var.image_folder}/SoftwareReport",
       "mv ${var.image_folder}/post-gen ${var.image_folder}/post-generation"
     ]
@@ -258,7 +277,7 @@ build {
     scripts          = ["${path.root}/../scripts/build/install-apt-vital.sh"]
   }
 
-provisioner "shell" {
+  provisioner "shell" {
     environment_vars = ["HELPER_SCRIPTS=${var.helper_script_folder}", "INSTALLER_SCRIPT_FOLDER=${var.installer_script_folder}"]
     execute_command  = "sudo sh -c '{{ .Vars }} {{ .Path }}'"
     scripts          = ["${path.root}/../scripts/build/install-powershell.sh"]
@@ -273,7 +292,11 @@ provisioner "shell" {
   provisioner "shell" {
     environment_vars = ["HELPER_SCRIPTS=${var.helper_script_folder}", "INSTALLER_SCRIPT_FOLDER=${var.installer_script_folder}", "DEBIAN_FRONTEND=noninteractive"]
     execute_command  = "sudo sh -c '{{ .Vars }} {{ .Path }}'"
-    scripts          = [
+    scripts = [
+      "${path.root}/../scripts/build/install-consul.sh",
+      "${path.root}/../scripts/build/install-vault.sh",
+      "${path.root}/../scripts/build/install-terraform.sh",
+      "${path.root}/../scripts/build/install-packer.sh",
       "${path.root}/../scripts/build/install-actions-cache.sh",
       "${path.root}/../scripts/build/install-runner-package.sh",
       "${path.root}/../scripts/build/install-apt-common.sh",
@@ -304,9 +327,12 @@ provisioner "shell" {
       "${path.root}/../scripts/build/install-miniconda.sh",
       "${path.root}/../scripts/build/install-kotlin.sh",
       "${path.root}/../scripts/build/install-mysql.sh",
+      "${path.root}/../scripts/build/install-mssql-tools.sh",
+      "${path.root}/../scripts/build/install-sqlpackage.sh",
       "${path.root}/../scripts/build/install-nginx.sh",
       "${path.root}/../scripts/build/install-nvm.sh",
       "${path.root}/../scripts/build/install-nodejs.sh",
+      "${path.root}/../scripts/build/install-playwright.sh",
       "${path.root}/../scripts/build/install-bazel.sh",
       "${path.root}/../scripts/build/install-php.sh",
       "${path.root}/../scripts/build/install-postgresql.sh",
@@ -315,7 +341,6 @@ provisioner "shell" {
       "${path.root}/../scripts/build/install-rust.sh",
       "${path.root}/../scripts/build/install-julia.sh",
       "${path.root}/../scripts/build/install-selenium.sh",
-      "${path.root}/../scripts/build/install-packer.sh",
       "${path.root}/../scripts/build/install-vcpkg.sh",
       "${path.root}/../scripts/build/configure-dpkg.sh",
       "${path.root}/../scripts/build/install-yq.sh",
