@@ -32,7 +32,7 @@ source "amazon-ebs" "build_image" {
   ssh_interface = "public_ip"
 
   spot_instance_types = [
-    "c7a.xlarge",
+    "c7i.xlarge",
   ]
 
   spot_price = "auto"
