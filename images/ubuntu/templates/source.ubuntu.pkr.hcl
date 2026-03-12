@@ -11,6 +11,10 @@ packer {
   }
 }
 
+variable "region" {
+  type    = string
+}
+
 source "amazon-ebs" "build_image" {
   ami_name = local.aws_ami_name_x86_64
 
@@ -21,7 +25,10 @@ source "amazon-ebs" "build_image" {
 
   subnet_filter {
     filters = {
-      "tag:Environment" : "github-actions-runners"
+      "tag:Environment" = [
+        "github-actions-runners",
+        "github-actions-runners-malaysia"
+      ]
       "tag:Name" : "*-public-*"
     }
     random = true
@@ -37,7 +44,7 @@ source "amazon-ebs" "build_image" {
 
   spot_price = "auto"
 
-  region = "us-east-2"
+  region = var.region
 
   source_ami_filter {
     filters = {
