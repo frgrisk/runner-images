@@ -5,6 +5,12 @@ on:
     branches:
       - main
   workflow_dispatch:
+    inputs:
+      image:
+        type: boolean
+        description: "Create AMI"
+        required: true
+        default: false
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
@@ -15,6 +21,7 @@ jobs:
     permissions:
       id-token: write
       contents: read
+    if: github.event.inputs.image == 'true'
     runs-on: ubuntu-latest
     defaults:
       run:
