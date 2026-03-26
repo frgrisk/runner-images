@@ -192,6 +192,8 @@
     "brew": [
     ],
     "docker": {
+        "images": [
+        ],
         "components": [
             {
                 "package": "containerd.io",
