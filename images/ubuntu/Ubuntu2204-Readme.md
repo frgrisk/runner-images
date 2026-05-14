@@ -1,11 +1,12 @@
 | Announcements |
 |-|
+| [[All OS] Default Node.js version will be changed from 20 to 22 and Node.js 20 will be removed from runner images](https://github.com/actions/runner-images/issues/14029) |
 | [[Windows/Ubuntu] Docker Server and Client will be updated to version 29.1.*, Docker Compose will be updated to version 2.40.3 on February 9th, 2026](https://github.com/actions/runner-images/issues/13474) |
 ***
 # Ubuntu 22.04
 - OS Version: 22.04.5 LTS
 - Kernel Version: 6.8.0-1052-azure
-- Image Version: 20260505.131.1
+- Image Version: 20260513.139.2
 - Systemd version: 249.11-0ubuntu3.20
 
 ## Installed Software
@@ -31,15 +32,15 @@
 ### Package Management
 - cpan 1.64
 - Helm 3.20.2
-- Homebrew 5.1.9
+- Homebrew 5.1.11
 - Miniconda 26.3.2
 - Npm 10.8.2
 - NuGet 6.6.1.2
 - Pip 22.0.2
 - Pip3 22.0.2
-- Pipx 1.11.2
+- Pipx 1.12.0
 - RubyGems 3.3.5
-- Vcpkg (build from commit 1f4af5fe2a)
+- Vcpkg (build from commit 8defa4b8bc)
 - Yarn 1.22.22
 
 #### Environment variables
@@ -58,7 +59,7 @@ to accomplish this.
 
 ### Project Management
 - Ant 1.10.12
-- Gradle 9.5.0
+- Gradle 9.5.1
 - Lerna 9.0.7
 - Maven 3.9.15
 - Sbt 1.12.11
@@ -69,16 +70,16 @@ to accomplish this.
 - AzCopy 10.32.3 - available by `azcopy` and `azcopy10` aliases
 - Bazel 9.1.0
 - Bazelisk 1.28.1
-- Bicep 0.43.1
+- Bicep 0.43.8
 - Buildah 1.23.1
 - CMake 3.31.6
-- CodeQL Action Bundle 2.25.3
+- CodeQL Action Bundle 2.25.4
 - Docker Amazon ECR Credential Helper 0.12.0
 - Docker Compose v2 2.38.2
 - Docker-Buildx 0.33.0
 - Docker Client 28.0.4
 - Docker Server 28.0.4
-- Fastlane 2.233.1
+- Fastlane 2.234.0
 - Git 2.54.0
 - Git LFS 3.7.1
 - Git-ftp 1.6.0
@@ -86,7 +87,7 @@ to accomplish this.
 - Heroku 11.3.0
 - jq 1.6
 - Kind 0.31.0
-- Kubectl 1.36.0
+- Kubectl 1.36.1
 - Kustomize 5.8.1
 - Leiningen 2.12.0
 - MediaInfo 21.09
@@ -99,30 +100,30 @@ to accomplish this.
 - Packer 1.15.3
 - Parcel 2.16.4
 - Podman 3.4.4
-- Pulumi 3.235.0
+- Pulumi 3.237.0
 - R 4.6.0
 - Skopeo 1.4.1
 - Sphinx Open Source Search Server 2.2.11
 - SVN 1.14.1
-- Terraform 1.15.1
+- Terraform 1.15.3
 - yamllint 1.38.0
 - yq 4.53.2
 - zstd 1.5.7
 - Ninja 1.13.2
 
 ### CLI Tools
-- Alibaba Cloud CLI 3.3.12
-- AWS CLI 2.34.43
+- Alibaba Cloud CLI 3.3.14
+- AWS CLI 2.34.45
 - AWS CLI Session Manager Plugin 1.2.814.0
 - AWS SAM CLI 1.159.1
 - Azure CLI 2.86.0
 - Azure CLI (azure-devops) 1.0.3
 - GitHub CLI 2.92.0
-- Google Cloud CLI 567.0.0
+- Google Cloud CLI 568.0.0
 - Netlify CLI 26.0.1
-- OpenShift CLI 4.21.12
+- OpenShift CLI 4.21.15
 - ORAS CLI 1.3.2
-- Vercel CLI 53.1.1
+- Vercel CLI 53.4.0
 
 ### Java
 | Version              | Environment Variable |
@@ -135,7 +136,7 @@ to accomplish this.
 
 ### PHP Tools
 - PHP: 8.1.2
-- Composer 2.9.7
+- Composer 2.9.8
 - PHPUnit 8.5.52
 ```
 Both Xdebug and PCOV extensions are installed, but only Xdebug is enabled.
@@ -162,13 +163,13 @@ Both Xdebug and PCOV extensions are installed, but only Xdebug is enabled.
 - Rustfmt 1.9.0
 
 ### Browsers and Drivers
-- Google Chrome 148.0.7778.96
-- ChromeDriver 148.0.7778.97
+- Google Chrome 148.0.7778.167
+- ChromeDriver 148.0.7778.167
 - Chromium 148.0.7778.0
-- Microsoft Edge 147.0.3912.98
-- Microsoft Edge WebDriver 147.0.3912.98
-- Selenium server 4.43.0
-- Mozilla Firefox 150.0.1
+- Microsoft Edge 148.0.3967.54
+- Microsoft Edge WebDriver 148.0.3967.54
+- Selenium server 4.44.0
+- Mozilla Firefox 150.0.2
 - Geckodriver 0.36.0
 
 #### Environment variables
@@ -180,7 +181,7 @@ Both Xdebug and PCOV extensions are installed, but only Xdebug is enabled.
 | SELENIUM_JAR_PATH | /usr/share/java/selenium-server.jar   |
 
 ### .NET Tools
-- .NET Core SDK: 8.0.126, 8.0.206, 8.0.319, 8.0.420, 9.0.116, 9.0.205, 9.0.313, 10.0.107, 10.0.203
+- .NET Core SDK: 8.0.127, 8.0.206, 8.0.319, 8.0.421, 9.0.117, 9.0.205, 9.0.314, 10.0.108, 10.0.204, 10.0.300
 - nbgv 3.9.50+6feeb89450
 
 ### Databases
@@ -213,7 +214,7 @@ Use the following command as a part of your job to start the service: 'sudo syst
 - 1.22.12
 - 1.23.12
 - 1.24.13
-- 1.25.9
+- 1.25.10
 
 #### Node.js
 - 20.20.2
@@ -225,7 +226,7 @@ Use the following command as a part of your job to start the service: 'sudo syst
 - 3.11.15
 - 3.12.13
 - 3.13.13
-- 3.14.4
+- 3.14.5
 
 #### PyPy
 - 3.7.13 [PyPy 7.3.9]
@@ -238,7 +239,7 @@ Use the following command as a part of your job to start the service: 'sudo syst
 - 3.2.11
 - 3.3.11
 - 3.4.9
-- 4.0.3
+- 4.0.4
 
 ### PowerShell Tools
 - PowerShell 7.4.15
@@ -246,7 +247,7 @@ Use the following command as a part of your job to start the service: 'sudo syst
 #### PowerShell Modules
 - Az: 14.6.0
 - MarkdownPS: 1.10
-- Microsoft.Graph: 2.36.1
+- Microsoft.Graph: 2.37.0
 - Pester: 5.7.1
 - PSScriptAnalyzer: 1.25.0
 
