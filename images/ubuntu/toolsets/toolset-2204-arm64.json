@@ -4,8 +4,8 @@
             "name": "Python",
             "url" : "https://raw.githubusercontent.com/actions/python-versions/main/versions-manifest.json",
             "platform" : "linux",
-            "platform_version": "24.04",
-            "arch": "x64",
+            "platform_version": "22.04",
+            "arch": "arm64",
             "versions": [
                 "3.10.*",
                 "3.11.*",
@@ -16,19 +16,16 @@
         },
         {
             "name": "PyPy",
-            "arch": "x64",
+            "arch": "arm64",
             "platform" : "linux",
             "versions": [
-                "3.9",
-                "3.10",
-                "3.11"
             ]
         },
         {
             "name": "node",
             "url" : "https://raw.githubusercontent.com/actions/node-versions/main/versions-manifest.json",
             "platform" : "linux",
-            "arch": "x64",
+            "arch": "arm64",
             "versions": [
                 "22.*",
                 "24.*"
@@ -37,20 +34,19 @@
         {
             "name": "go",
             "url" : "https://raw.githubusercontent.com/actions/go-versions/main/versions-manifest.json",
-            "arch": "x64",
+            "arch": "arm64",
             "platform" : "linux",
             "versions": [
-                "1.22.*",
-                "1.23.*",
                 "1.24.*",
-                "1.25.*"
+                "1.25.*",
+                "1.26.*"
             ],
             "default": "1.24.*"
         },
         {
             "name": "Ruby",
-            "platform_version": "24.04",
-            "arch": "x64",
+            "platform_version": "22.04",
+            "arch": "arm64",
             "versions": [
                 "3.2.*",
                 "3.3.*",
@@ -61,19 +57,18 @@
         {
             "name": "CodeQL",
             "platform" : "linux",
-            "arch": "x64",
+            "arch": "arm64",
             "versions": [
-                "*"
             ]
         }
     ],
     "java": {
-        "default": "17",
+        "default": "11",
         "versions": [ "8", "11", "17", "21", "25"],
-        "maven": "3"
+        "maven": "3.9.12"
     },
     "android": {
-        "cmdline-tools": "commandlinetools-linux-11076708_latest.zip",
+        "cmdline-tools": "commandlinetools-linux-9477386_latest.zip",
         "platform_min_version": "34",
         "build_tools_min_version": "34.0.0",
         "extra_list": [
@@ -84,8 +79,9 @@
         "addon_list": [
         ],
         "additional_tools": [
-            "cmake;3.31.5",
-            "cmake;4.1.2"
+            "cmake;3.18.1",
+            "cmake;3.22.1",
+            "cmake;3.31.5"
         ],
         "ndk": {
             "default": "27",
@@ -95,6 +91,7 @@
         }
     },
     "powershellModules": [
+        {"name": "MarkdownPS"},
         {"name": "Microsoft.Graph"},
         {"name": "Pester"},
         {"name": "PSScriptAnalyzer"}
@@ -129,12 +126,28 @@
             "fakeroot",
             "fonts-noto-color-emoji",
             "gnupg2",
+            "imagemagick",
             "iproute2",
             "iputils-ping",
+            "libc++abi-dev",
+            "libc++-dev",
+            "libc6-dev",
+            "libcurl4",
+            "libgbm-dev",
+            "libgconf-2-4",
+            "libgsl-dev",
+            "libgtk-3-0",
+            "libmagic-dev",
+            "libmagickcore-dev",
+            "libmagickwand-dev",
+            "libsecret-1-dev",
+            "libsqlite3-dev",
             "libyaml-dev",
             "libtool",
+            "libunwind8",
+            "libxkbfile-dev",
+            "libxss1",
             "libssl-dev",
-            "libsqlite3-dev",
             "locales",
             "mercurial",
             "openssh-client",
@@ -144,9 +157,9 @@
             "rpm",
             "texinfo",
             "tk",
-            "tree",
             "tzdata",
             "upx",
+            "xorriso",
             "xvfb",
             "xz-utils",
             "zsync"
@@ -171,6 +184,7 @@
             "net-tools",
             "p7zip-full",
             "parallel",
+            "pass",
             "patchelf",
             "pigz",
             "pollinate",
@@ -180,6 +194,7 @@
             "sqlite3",
             "ssh",
             "sshpass",
+            "subversion",
             "sudo",
             "systemd-coredump",
             "swig",
@@ -188,8 +203,6 @@
             "zip"
         ]
     },
-    "brew": [
-    ],
     "docker": {
         "components": [
             {
@@ -209,12 +222,12 @@
             {
                 "plugin": "buildx",
                 "version": "latest",
-                "asset": "linux-amd64"
-            },
+                "asset": "linux-arm64"
+            },            
             {
                 "plugin": "compose",
                 "version": "2.38.2",
-                "asset": "linux-x86_64"
+                "asset": "linux-aarch64"
             }
         ]
     },
@@ -240,29 +253,27 @@
     },
     "clang": {
         "versions": [
-            "16",
-            "17",
-            "18"
+            "14",
+            "15"
         ],
-        "default_version": "18"
+        "default_version": "14"
     },
     "gcc": {
         "versions": [
-            "g++-12",
-            "g++-13",
-            "g++-14"
+            "g++-10",
+            "g++-12"
         ]
     },
     "gfortran": {
         "versions": [
-            "gfortran-12",
-            "gfortran-13",
-            "gfortran-14"
+            "gfortran-9",
+            "gfortran-10",
+            "gfortran-12"
         ]
     },
     "php": {
         "versions": [
-            "8.3"
+            "8.1"
         ]
     },
     "rubygems": [
@@ -300,12 +311,20 @@
             "command": "newman"
         },
         {
+            "name": "vercel",
+            "command": "vercel"
+        },
+        {
             "name": "webpack",
             "command": "webpack"
         },
         {
             "name": "webpack-cli",
             "command": "webpack-cli"
+        },
+        {
+            "name": "netlify-cli",
+            "command": "netlify"
         },
         {
             "name": "lerna",
@@ -316,8 +335,8 @@
             "command": "yarn"
         }
     ],
-    "postgresql": {
-        "version": "16"
+     "postgresql": {
+        "version": "14"
     },
     "cmake": {
         "version": "3.31.6",

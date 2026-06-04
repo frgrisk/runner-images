@@ -5,7 +5,7 @@
             "url" : "https://raw.githubusercontent.com/actions/python-versions/main/versions-manifest.json",
             "platform" : "linux",
             "platform_version": "24.04",
-            "arch": "x64",
+            "arch": "arm64",
             "versions": [
                 "3.10.*",
                 "3.11.*",
@@ -16,19 +16,16 @@
         },
         {
             "name": "PyPy",
-            "arch": "x64",
+            "arch": "arm64",
             "platform" : "linux",
             "versions": [
-                "3.9",
-                "3.10",
-                "3.11"
             ]
         },
         {
             "name": "node",
             "url" : "https://raw.githubusercontent.com/actions/node-versions/main/versions-manifest.json",
             "platform" : "linux",
-            "arch": "x64",
+            "arch": "arm64",
             "versions": [
                 "22.*",
                 "24.*"
@@ -37,20 +34,19 @@
         {
             "name": "go",
             "url" : "https://raw.githubusercontent.com/actions/go-versions/main/versions-manifest.json",
-            "arch": "x64",
+            "arch": "arm64",
             "platform" : "linux",
             "versions": [
-                "1.22.*",
-                "1.23.*",
                 "1.24.*",
-                "1.25.*"
+                "1.25.*",
+                "1.26.*"
             ],
             "default": "1.24.*"
         },
         {
             "name": "Ruby",
             "platform_version": "24.04",
-            "arch": "x64",
+            "arch": "arm64",
             "versions": [
                 "3.2.*",
                 "3.3.*",
@@ -61,16 +57,15 @@
         {
             "name": "CodeQL",
             "platform" : "linux",
-            "arch": "x64",
+            "arch": "arm64",
             "versions": [
-                "*"
             ]
         }
     ],
     "java": {
         "default": "17",
         "versions": [ "8", "11", "17", "21", "25"],
-        "maven": "3"
+        "maven": "3.9.12"
     },
     "android": {
         "cmdline-tools": "commandlinetools-linux-11076708_latest.zip",
@@ -134,6 +129,7 @@
             "libyaml-dev",
             "libtool",
             "libssl-dev",
+            "libgbm-dev",
             "libsqlite3-dev",
             "locales",
             "mercurial",
@@ -209,12 +205,12 @@
             {
                 "plugin": "buildx",
                 "version": "latest",
-                "asset": "linux-amd64"
+                "asset": "linux-arm64"
             },
             {
                 "plugin": "compose",
                 "version": "2.38.2",
-                "asset": "linux-x86_64"
+                "asset": "linux-aarch64"
             }
         ]
     },
