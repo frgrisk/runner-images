@@ -34,7 +34,7 @@ source "amazon-ebs" "build_image" {
 
   associate_public_ip_address = true
 
-  ssh_interface = "public_ip"
+  ssh_interface = "private_ip"
 
   spot_instance_types = [
     "c7i.xlarge",
@@ -82,7 +82,7 @@ source "amazon-ebs" "build_image_arm64" {
 
   associate_public_ip_address = true
 
-  ssh_interface = "public_ip"
+  ssh_interface = "private_ip"
 
   spot_instance_types = [
     "c7g.xlarge",
