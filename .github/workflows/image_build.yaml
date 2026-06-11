@@ -79,10 +79,6 @@ jobs:
         env:
           AWS_MAX_ATTEMPTS: 240
           AWS_POLL_DELAY_SECONDS: 30
-          # Verbose debug logging. PACKER_LOG enables trace output; the log is
-          # also written to PACKER_LOG_PATH and uploaded as an artifact below.
-          PACKER_LOG: 1
-          PACKER_LOG_PATH: packer-${{ matrix.architecture }}-${{ matrix.region }}.log
         run: |
           if [ "${{ matrix.architecture }}" = "arm64" ]; then
             only="ubuntu-24_04-arm64.amazon-ebs.build_image_arm64"
@@ -92,11 +88,3 @@ jobs:
             image_os="ubuntu24"
           fi
           packer build -var "region=${{ matrix.region }}" -only="$only" -var="image_os=$image_os" .
-
-      - name: Upload Packer debug log
-        if: always()
-        uses: actions/upload-artifact@v4
-        with:
-          name: packer-log-${{ matrix.architecture }}-${{ matrix.region }}
-          path: images/ubuntu/templates/packer-${{ matrix.architecture }}-${{ matrix.region }}.log
-          if-no-files-found: warn
