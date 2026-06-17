@@ -25,7 +25,14 @@ Describe "fwupd removed" {
 
 # https://github.com/actions/runner-images/issues/13770
 # Linux kernel 6.17 changed read_ahead_kb from 128 to 4096 on Azure VMs, causing I/O thrashing
-Describe "ReadAhead udev rule" -Skip:(Test-IsUbuntu22) {
+# AWS Nitro presents EBS volumes as nvme* (no sd* devices), so this rule is a
+# harmless no-op and the device-level check below can never pass. Skip the group
+# when no sd* devices exist (extends the upstream -Skip rather than restructuring,
+# to keep future merges clean). NOTE: (Test-IsUbuntu22) MUST stay parenthesized so
+# the expression parses in expression mode; a bare `Test-IsUbuntu22 -or ...` is read
+# in command mode, passing -or/-not as arguments to the function and silently
+# evaluating to $false (the test would then never skip).
+Describe "ReadAhead udev rule" -Skip:((Test-IsUbuntu22) -or -not (Get-ChildItem "/sys/block/sd*" -ErrorAction SilentlyContinue)) {
     It "udev rule file exists" {
         "/etc/udev/rules.d/99-readahead.rules" | Should -Exist
     }

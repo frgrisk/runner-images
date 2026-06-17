@@ -13,7 +13,7 @@ local "ami_users" {
 packer {
   required_plugins {
     amazon = {
-      version = ">= 1.2.8"
+      version = "= 1.8.0"
       source  = "github.com/hashicorp/amazon"
     }
   }
@@ -37,7 +37,7 @@ source "amazon-ebs" "build_image" {
   ssh_interface = "public_ip"
 
   spot_instance_types = [
-    "c7i.xlarge",
+    "c7i-flex.xlarge",
   ]
 
   spot_price = "auto"
