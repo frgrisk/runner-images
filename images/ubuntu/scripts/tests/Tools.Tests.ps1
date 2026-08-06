@@ -335,6 +335,29 @@ Describe "Containers" {
         "podman network rm test-net" | Should -ReturnZeroExitCode
     }
 
+    # https://github.com/actions/runner-images/issues/14473
+    It "podman uses the crun shipped with the podman bundle" -Skip:(Test-IsUbuntu26) {
+        "podman info --format '{{.Host.OCIRuntime.Path}}'" | Should -OutputTextMatchingRegex "/usr/local/bin/crun"
+    }
+
+    # https://github.com/actions/runner-images/issues/14406
+    # registries.conf must be valid v2 format; a v1 file is rejected by newer podman.
+    It "podman registries.conf" {
+        "podman info" | Should -ReturnZeroExitCode
+        "podman info" | Should -OutputTextMatchingRegex "docker.io"
+        "podman info" | Should -OutputTextMatchingRegex "quay.io"
+    }
+
+    # https://github.com/actions/runner-images/issues/14477
+    It "<Directory> is owned by root" -TestCases @(
+        @{ Directory = "/usr" }
+        @{ Directory = "/etc" }
+        @{ Directory = "/usr/local" }
+        @{ Directory = "/usr/local/bin" }
+    ) {
+        $(stat -c "%U" $Directory) | Should -Be "root"
+    }
+
 }
 
 Describe "nvm" {
@@ -438,5 +461,28 @@ Describe "AWF" -Skip:(Test-IsUbuntu22) {
         $latestVersion = Get-ChildItem -Path $awfPath -Directory | Sort-Object -Property { [version]$_.Name } -Descending | Select-Object -First 1
         $bundlePath = Join-Path $latestVersion.FullName "x64" "awf-bundle.js"
         $bundlePath | Should -Exist
+    }
+}
+
+Describe "Copilot CLI" -Skip:(Test-IsUbuntu22) {
+    It "Copilot CLI toolcache directory exists" {
+        $copilotPath = Join-Path $env:AGENT_TOOLSDIRECTORY "copilot-cli"
+        $copilotPath | Should -Exist
+    }
+
+    It "Copilot CLI binary exists in toolcache" {
+        $arch = if ((uname -m) -eq "aarch64") { "arm64" } else { "x64" }
+        $copilotPath = Join-Path $env:AGENT_TOOLSDIRECTORY "copilot-cli"
+        $latestVersion = Get-ChildItem -Path $copilotPath -Directory | Sort-Object -Property { [version]$_.Name } -Descending | Select-Object -First 1
+        $binPath = Join-Path $latestVersion.FullName $arch "bin" "copilot"
+        $binPath | Should -Exist
+    }
+
+    It "Copilot CLI toolcache .complete marker exists" {
+        $arch = if ((uname -m) -eq "aarch64") { "arm64" } else { "x64" }
+        $copilotPath = Join-Path $env:AGENT_TOOLSDIRECTORY "copilot-cli"
+        $latestVersion = Get-ChildItem -Path $copilotPath -Directory | Sort-Object -Property { [version]$_.Name } -Descending | Select-Object -First 1
+        $completeMarker = Join-Path $latestVersion.FullName "$arch.complete"
+        $completeMarker | Should -Exist
     }
 }

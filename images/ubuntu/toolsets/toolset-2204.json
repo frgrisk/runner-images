@@ -42,10 +42,9 @@
             "arch": "x64",
             "platform" : "linux",
             "versions": [
-                "1.22.*",
-                "1.23.*",
                 "1.24.*",
-                "1.25.*"
+                "1.25.*",
+                "1.26.*"
             ],
             "default": "1.24.*"
         },
@@ -100,7 +99,7 @@
     "powershellModules": [
         {"name": "MarkdownPS"},
         {"name": "Microsoft.Graph"},
-        {"name": "Pester"},
+        {"name": "Pester", "versions": ["5.9.0"]},
         {"name": "PSScriptAnalyzer"}
     ],
     "azureModules": [
@@ -173,6 +172,7 @@
             "libxkbfile-dev",
             "libxss1",
             "libssl-dev",
+            "libicu-dev",
             "locales",
             "mercurial",
             "openssh-client",

@@ -24,6 +24,22 @@ for package in $common_packages; do
             fi
             ;;
 
+        xcodes)
+            if is_SequoiaArm64 || is_TahoeArm64; then
+                # xcodes formulae still works on MacOS 15 ARM and 26 ARM
+                brew_smart_install "$package"
+            else
+                # homebrew-core ships no x86_64 bottle for current xcodes, and building it
+                # from source needs xcbuild (unavailable during image build). Install the
+                # prebuilt Developer-ID-signed universal binary from XcodesOrg's release.
+                echo "Installing xcodes from XcodesOrg release..."
+                curl -fsSL "https://github.com/XcodesOrg/xcodes/releases/latest/download/xcodes.zip" -o /tmp/xcodes.zip
+                unzip -oq /tmp/xcodes.zip -d /tmp/xcodes-bin
+                sudo install -m 0755 /tmp/xcodes-bin/xcodes /usr/local/bin/xcodes
+                rm -rf /tmp/xcodes.zip /tmp/xcodes-bin
+            fi
+            ;;
+
         # Default behaviour for all other packages
         *)
             brew_smart_install "$package"
