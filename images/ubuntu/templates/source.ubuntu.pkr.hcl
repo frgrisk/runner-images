@@ -36,9 +36,17 @@ source "amazon-ebs" "build_image" {
 
   ssh_interface = "public_ip"
 
+  # The fleet request only uses the one subnet subnet_filter picks, so these types are the
+  # only fallback when that AZ runs out of spot capacity.
   spot_instance_types = [
     "c7i-flex.xlarge",
+    "c7i.xlarge",
+    "c8i-flex.xlarge",
+    "c8i.xlarge",
+    "c6i.xlarge",
   ]
+
+  spot_allocation_strategy = "price-capacity-optimized"
 
   spot_price = "auto"
 
@@ -84,10 +92,17 @@ source "amazon-ebs" "build_image_arm64" {
 
   ssh_interface = "public_ip"
 
+  # The fleet request only uses the one subnet subnet_filter picks, so these types are the
+  # only fallback when that AZ runs out of spot capacity.
   spot_instance_types = [
     "c7g.xlarge",
     "c6g.xlarge",
+    "c8g.xlarge",
+    "m7g.xlarge",
+    "m8g.xlarge",
   ]
+
+  spot_allocation_strategy = "price-capacity-optimized"
 
   spot_price = "auto"
 
