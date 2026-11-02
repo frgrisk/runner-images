@@ -87,4 +87,7 @@ jobs:
             only="ubuntu-24_04.amazon-ebs.build_image"
             image_os="ubuntu24"
           fi
-          packer build -var "region=${{ matrix.region }}" -only="$only" -var="image_os=$image_os" .
+          # GitHub kills a job at 6h without letting Packer clean up, leaving its instance running.
+          # SIGINT at 5h makes Packer cancel and delete its AWS resources itself; builds take ~2h.
+          timeout --signal=INT --kill-after=30m 5h \
+            packer build -var "region=${{ matrix.region }}" -only="$only" -var="image_os=$image_os" .
