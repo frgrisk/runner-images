@@ -12,9 +12,16 @@ Upstream builds on Azure; this fork builds AMIs on AWS with only the Packer `ama
 
 1. **Merge.** On `main`: `git fetch upstream --tags`, then `git merge <tag>` (tags look like `ubuntu24/20261026.354`). Done when `git status` lists the conflicted paths.
 
-2. **Resolve hunk by hunk.** Edit inside each conflict block so upstream's clean hunks elsewhere in the same file survive. `git checkout --ours <file>` replaces the whole file and discards them; `git checkout -m <file>` restores the conflict if that happens. Where upstream's side of a hunk is Azure-only, keep the fork's side. Done when `git diff --name-only --diff-filter=U` is empty and `git diff MERGE_HEAD -- <file>` shows only the fork's AWS changes for each resolved file.
+2. **Resolve hunk by hunk.** Edit inside each conflict block so upstream's clean hunks elsewhere in the same file survive. `git checkout --ours <file>` replaces the whole file and discards them; `git checkout -m <file>` restores the conflict if that happens. Where upstream's side of a hunk is Azure-only, keep the fork's side. For every upstream hunk you drop, grep `images/ubuntu/scripts/tests/` for the paths, names and values it writes: a test asserting one means you keep the hunk (if it is harmless on EC2) or adapt the test in the same commit. Done when `git diff --name-only --diff-filter=U` is empty, `git diff MERGE_HEAD -- <file>` shows only the fork's AWS changes for each resolved file, and no test asserts what a dropped hunk wrote.
 
-3. **Audit divergence points.** A clean merge can still carry an Azure assumption. Read `git diff HEAD...MERGE_HEAD` for every path in the table below, and for every new or changed test under `images/ubuntu/scripts/tests/`: a new test can assert Azure-only behavior the fork never had. Done when every Azure assumption is adapted to AWS or confirmed harmless on EC2.
+3. **Audit divergence points.** A clean merge can still carry an Azure assumption. Read `git diff HEAD...MERGE_HEAD` for every path in the table below, and for every new or changed test under `images/ubuntu/scripts/tests/`: a new test can assert Azure-only behavior the fork never had. Check a suspect test in seconds with [`run-pester-block.sh`](run-pester-block.sh), which runs one Pester block in a container after an optional setup command, instead of waiting on a two-hour AMI build:
+
+   ```bash
+   bash .claude/skills/upstream-merge/run-pester-block.sh System.Tests.ps1 'Azure resource disk mount timeout.*' \
+     'awk "/^# Ephemeral-OS VMs/{on=1} on{print} on && /^EOF\$/{exit}" /repo/images/ubuntu/scripts/build/configure-environment.sh > /tmp/s.sh && bash -e /tmp/s.sh'
+   ```
+
+   Done when every Azure assumption is adapted to AWS or confirmed harmless on EC2.
 
 4. **Validate.** `packer init images/ubuntu/templates`, then `packer validate -var region=us-east-2 -var image_os=ubuntu24 images/ubuntu/templates`. Done when it prints `The configuration is valid.`
 
