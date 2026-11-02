@@ -26,7 +26,7 @@ Upstream builds on Azure; this fork builds AMIs on AWS with only the Packer `ama
 |---|---|---|
 | `images/ubuntu/templates/source.ubuntu.pkr.hcl` | `amazon-ebs` sources `build_image` and `build_image_arm64`, with the spot fleet settings | `source "azure-arm" "image"` |
 | `images/ubuntu/templates/build.*.pkr.hcl` | `sources` names an `amazon-ebs` source | `source.azure-arm.image` |
-| `images/ubuntu/scripts/build/configure-environment.sh` | no Azure agent or resource-disk setup | `waagent.conf` swap, cloud-init `/mnt` resource-disk mount |
+| `images/ubuntu/scripts/build/configure-environment.sh` | no `waagent.conf` swap (the file does not exist on EC2); keeps upstream's cloud-init `/mnt` mount drop-in, which `System.Tests.ps1` asserts | `waagent.conf` swap |
 | `images/ubuntu/scripts/build/configure-apt-sources.sh` | mirror list starts with the EC2 regional mirror | mirror list starts with `azure.archive.ubuntu.com` |
 
 New upstream build files: Packer parses every `.pkr.hcl` in the directory even with `-only=`, so a new `build.*.pkr.hcl` on `source.azure-arm.image` fails every build with `Error: Unknown source type azure-arm`. Edit its `sources` line to `["source.amazon-ebs.build_image"]` and keep the file, so later merges stay clean.
