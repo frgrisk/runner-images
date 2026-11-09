@@ -144,7 +144,8 @@ provisioner "shell" {
       "${path.root}/../scripts/build/install-yq.sh",
       "${path.root}/../scripts/build/install-python.sh",
       "${path.root}/../scripts/build/install-zstd.sh",
-      "${path.root}/../scripts/build/install-ninja.sh"
+      "${path.root}/../scripts/build/install-ninja.sh",
+      "${path.root}/../scripts/build/install-mkcert.sh"
     ]
   }
 
