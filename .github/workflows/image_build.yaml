@@ -91,3 +91,30 @@ jobs:
           # SIGINT at 5h makes Packer cancel and delete its AWS resources itself; builds take ~2h.
           timeout --signal=INT --kill-after=30m 5h \
             packer build -var "region=${{ matrix.region }}" -only="$only" -var="image_os=$image_os" .
+
+  # Removes this repo's runner AMIs that are neither among the two newest in their region nor
+  # marked in use by a deploy (see .github/scripts/prune-runner-amis.sh).
+  prune:
+    needs: ami-build
+    permissions:
+      id-token: write
+      contents: read
+    runs-on: ubuntu-latest
+    # A prune acts on one read; the deploy step's protection outlasts a run this long.
+    timeout-minutes: 30
+    strategy:
+      fail-fast: false
+      matrix:
+        region: [us-east-2, ap-southeast-5]
+    steps:
+      - uses: actions/checkout@v7
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v6
+        with:
+          aws-region: ${{ matrix.region }}
+          role-to-assume: arn:aws:iam::560610306577:role/runner-ami-prune
+          role-session-name: runner-ami-prune
+
+      - name: Prune runner AMIs
+        run: .github/scripts/prune-runner-amis.sh "${{ matrix.region }}" 2

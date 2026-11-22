@@ -10,6 +10,11 @@ local "ami_users" {
   ]
 }
 
+# The tag .github/scripts/prune-runner-amis.sh selects on; its header says when it removes an AMI.
+local "prunable" {
+  expression = { "runner-images:prunable" = "true" }
+}
+
 packer {
   required_plugins {
     amazon = {
@@ -23,6 +28,9 @@ source "amazon-ebs" "build_image" {
   ami_name = local.aws_ami_name_x86_64
 
   ami_users = local.ami_users
+
+  tags          = local.prunable
+  snapshot_tags = local.prunable
 
   subnet_filter {
     filters = {
@@ -79,6 +87,9 @@ source "amazon-ebs" "build_image_arm64" {
   ami_name = local.aws_ami_name_arm64
 
   ami_users = local.ami_users
+
+  tags          = local.prunable
+  snapshot_tags = local.prunable
 
   subnet_filter {
     filters = {
